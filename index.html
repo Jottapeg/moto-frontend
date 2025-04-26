@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -20,10 +19,57 @@
       color: #555;
       font-size: 1.2rem;
     }
+    .usuarios {
+      margin-top: 2rem;
+    }
+    .usuario {
+      background-color: #ecf0f1;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 <body>
   <h1>Site Moto Frontend em construção 🚀</h1>
   <p>Em breve novidades!</p>
+
+  <div class="usuarios">
+    <h2>Lista de Usuários</h2>
+    <div id="usuarios-lista"></div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    // Função para exibir os usuários na tela
+    async function listarUsuarios() {
+      try {
+        const resposta = await fetch('https://moto-backend1.onrender.com/api/v1/usuarios');
+        const dados = await resposta.json();
+        
+        const listaUsuarios = document.getElementById('usuarios-lista');
+        listaUsuarios.innerHTML = ''; // Limpa qualquer conteúdo existente
+
+        // Verificando se há usuários
+        if (dados && dados.length > 0) {
+          dados.forEach(usuario => {
+            const divUsuario = document.createElement('div');
+            divUsuario.classList.add('usuario');
+            divUsuario.innerHTML = `<p><strong>Nome:</strong> ${usuario.nome}</p><p><strong>Email:</strong> ${usuario.email}</p>`;
+            listaUsuarios.appendChild(divUsuario);
+          });
+        } else {
+          listaUsuarios.innerHTML = '<p>Nenhum usuário encontrado.</p>';
+        }
+      } catch (erro) {
+        console.error('Erro ao buscar usuários:', erro);
+        document.getElementById('usuarios-lista').innerHTML = '<p>Erro ao carregar os usuários.</p>';
+      }
+    }
+
+    // Chama a função para listar os usuários ao carregar a página
+    listarUsuarios();
+  </script>
 </body>
 </html>
