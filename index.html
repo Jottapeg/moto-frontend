@@ -29,18 +29,48 @@
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+    .form-container {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    input, button {
+      padding: 1rem;
+      margin: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #2c3e50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #34495e;
+    }
   </style>
 </head>
 <body>
   <h1>Site Moto Frontend em construção 🚀</h1>
   <p>Em breve novidades!</p>
 
+  <!-- Formulário para adicionar um novo usuário -->
+  <div class="form-container">
+    <h2>Cadastrar Novo Usuário</h2>
+    <form id="form-usuario">
+      <input type="text" id="nome" placeholder="Nome" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <button type="submit">Cadastrar</button>
+    </form>
+  </div>
+
   <div class="usuarios">
     <h2>Lista de Usuários</h2>
     <div id="usuarios-lista"></div>
   </div>
 
-  <script src="api.js"></script>
   <script>
     // Função para exibir os usuários na tela
     async function listarUsuarios() {
@@ -68,8 +98,44 @@
       }
     }
 
-    // Chama a função para listar os usuários ao carregar a página
+    // Função para cadastrar um novo usuário
+    async function cadastrarUsuario(event) {
+      event.preventDefault();
+
+      const nome = document.getElementById('nome').value;
+      const email = document.getElementById('email').value;
+
+      if (!nome || !email) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+      }
+
+      try {
+        const resposta = await fetch('https://moto-backend1.onrender.com/api/v1/usuarios', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ nome, email }),
+        });
+
+        if (resposta.ok) {
+          alert('Usuário cadastrado com sucesso!');
+          listarUsuarios();  // Atualiza a lista de usuários
+        } else {
+          alert('Erro ao cadastrar usuário.');
+        }
+      } catch (erro) {
+        console.error('Erro ao cadastrar usuário:', erro);
+        alert('Erro ao cadastrar usuário.');
+      }
+    }
+
+    // Inicializa a lista de usuários ao carregar a página
     listarUsuarios();
+
+    // Adiciona o evento de envio do formulário
+    document.getElementById('form-usuario').addEventListener('submit', cadastrarUsuario);
   </script>
 </body>
 </html>
